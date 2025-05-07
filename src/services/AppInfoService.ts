@@ -27,7 +27,6 @@ export class AppInfoService {
     if (this.initializationPromise) return this.initializationPromise;
 
     this.initializationPromise = (async () => {
-
       const appInfo = App.getInfo();
       const deviceInfo = Device.getInfo();
       const deviceId = Device.getId();

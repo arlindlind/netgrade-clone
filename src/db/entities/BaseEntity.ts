@@ -5,7 +5,7 @@ import {
   PrimaryGeneratedColumn,
   BeforeInsert,
   BeforeUpdate,
-  VersionColumn
+  VersionColumn,
 } from 'typeorm';
 
 import { AppInfoService } from '@/services/AppInfoService';
@@ -25,7 +25,6 @@ export abstract class BaseEntity {
 
   @Column({ type: 'json', nullable: true })
   appInstanceId!: Record<string, any> | null;
-
 
   @BeforeInsert()
   async setCreationDefaults(): Promise<void> {
