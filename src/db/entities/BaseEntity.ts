@@ -5,8 +5,10 @@ import {
   PrimaryGeneratedColumn,
   BeforeInsert,
   BeforeUpdate,
-  VersionColumn,
+  VersionColumn
 } from 'typeorm';
+
+import { AppInfoService } from '@/services/AppInfoService';
 
 export abstract class BaseEntity {
   @PrimaryGeneratedColumn('uuid')
@@ -21,22 +23,23 @@ export abstract class BaseEntity {
   @VersionColumn()
   version!: number;
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  appInstanceId!: string | null;
+  @Column({ type: 'json', nullable: true })
+  appInstanceId!: Record<string, any> | null;
+
 
   @BeforeInsert()
-  setCreationDefaults(): void {
-    this.appInstanceId = this.generateAppInstanceId();
+  async setCreationDefaults(): Promise<void> {
+    this.appInstanceId = await this.generateAppInstanceId();
   }
 
   @BeforeUpdate()
-  updateDefaults(): void {
-    this.appInstanceId = this.generateAppInstanceId();
+  async updateDefaults(): Promise<void> {
+    this.appInstanceId = await this.generateAppInstanceId();
   }
 
-  private generateAppInstanceId(): string {
-    // TODO: Use a real appInstanceId that depends on the user's device, the app version, the commit hash, etc.
-    const randomSuffix = Math.random().toString(36).substring(2, 10);
-    return `customId-${randomSuffix}`;
+  private async generateAppInstanceId(): Promise<Record<string, any>> {
+    const service = AppInfoService.getInstance();
+    await service.initialize();
+    return service.getAppInstanceId();
   }
 }
