@@ -23,8 +23,8 @@ export abstract class BaseEntity {
   @VersionColumn()
   version!: number;
 
-  @Column({ type: 'json', nullable: true })
-  appInstanceId!: Record<string, any> | null;
+  @Column({ type: 'varchar', nullable: true })
+  appInstanceId!: string;
 
   @BeforeInsert()
   async setCreationDefaults(): Promise<void> {
@@ -36,7 +36,7 @@ export abstract class BaseEntity {
     this.appInstanceId = await this.generateAppInstanceId();
   }
 
-  private async generateAppInstanceId(): Promise<Record<string, any>> {
+  private async generateAppInstanceId(): Promise<string> {
     const service = AppInfoService.getInstance();
     await service.initialize();
     return service.getAppInstanceId();

@@ -9,7 +9,7 @@ export class AppInfoService {
   private deviceInfo: DeviceInfo | null = null;
   private deviceId: DeviceId | null = null;
 
-  private generatedAppInstanceId: Record<string, any> | null = null;
+  private generatedAppInstanceId: string | null = null;
   private isInitialized = false;
   private initializationPromise: Promise<void> | null = null;
 
@@ -42,19 +42,21 @@ export class AppInfoService {
     return this.initializationPromise;
   }
 
-  public getAppInstanceId(): Record<string, any> {
+  public getAppInstanceId(): string {
     if (!this.isInitialized || !this.generatedAppInstanceId) {
       throw new Error('AppInfoService not initialized');
     }
     return this.generatedAppInstanceId;
   }
 
-  private buildAppInstanceId(): Record<string, any> {
-    return {
+  private buildAppInstanceId(): string {
+    const idObject = {
       deviceId: this.deviceId?.identifier ?? 'unknown-device',
       platform: this.deviceInfo?.platform ?? 'unknown-platform',
       version: this.appInfo?.version ?? 'unknown-version',
       build: this.appInfo?.build ?? 'unknown-build',
     };
+
+    return JSON.stringify(idObject);
   }
 }
